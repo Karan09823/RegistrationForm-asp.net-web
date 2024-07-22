@@ -135,6 +135,30 @@
                 }
             });
 
+/*form submission using button id */
+
+/*
+            $("#user_register").click(function (e) {
+                e.preventDefault();
+                if ($("#registerForm").valid()) {
+                    $.ajax({
+                        url: $("#registerForm").attr("action"),
+                        type: $("#registerForm").attr("method"),
+                        data: $("#registerForm").serialize(),
+                        success: function (response) {
+                            var message = response.message;
+                            $("#registerModal .modal-body").text(message);
+                            $("#registerModal").modal("show");
+                        },
+                        error: function (response) {
+                            var message = response.responseJSON ? response.responseJSON.message : "An error occurred.";
+                            $("#registerModal .modal-body").text(message);
+                            $("#registerModal").modal("show");
+                        }
+                    });
+                }
+            });*/
+
 
 
 
