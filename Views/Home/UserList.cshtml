@@ -1,0 +1,218 @@
+﻿@model List<REGISTRATION.Models.User>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>UserList</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+    <!-- JavaScript for Edit and Delete functionality -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function populateEditModel(id, name, mail, password, about,oldImagePath) {
+            $("#EditUserId").val(id);
+            $("#EditUserName").val(name);
+            $("#EditUserMail").val(mail);
+            $("#EditUserPassword").val(password);
+            $("#EditUserAbout").val(about);
+            $("#OldImagePath").val(oldImagePath);
+            
+            
+        }
+
+        function saveChanges() {
+            var id = $("#EditUserId").val();
+            var name = $("#EditUserName").val();
+            var mail = $("#EditUserMail").val();
+            var password = $("#EditUserPassword").val();
+            var about = $("#EditUserAbout").val();
+            var fileInput = $("#EditUserImage")[0];
+            var oldImagePath = $("#OldImagePath").val();
+
+            var formData = new FormData();
+            formData.append('EditUserId', id);
+            formData.append('EditUserName', name);
+            formData.append('EditUserMail', mail);
+            formData.append('EditUserPassword', password);
+            formData.append('EditUserAbout', about);
+
+            if (fileInput.files.length > 0) {
+                formData.append('EditImagepath', fileInput.files[0]);
+            }
+            else {
+                formData.append('oldImagePath', oldImagePath);
+            }
+
+            $.ajax({
+                url: '@Url.Action("Edit", "Home")',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    var messageContainer = $("#messageContainer");
+                    messageContainer.removeClass("alert alert-success alert-danger");
+
+                    if (response.success) {
+                        messageContainer.addClass("alert alert-success").text(response.message);
+                        $('#EditModel').modal('hide');
+                        location.reload();
+                    } else {
+                        messageContainer.addClass("alert alert-danger").text(response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    var messageContainer = $("#messageContainer");
+                    messageContainer.removeClass("alert alert-success alert-danger");
+                    messageContainer.addClass("alert alert-danger").text('Error: ' + error);
+                }
+            });
+        }
+
+        function handleDelete(userId) {
+            $("#DeleteModel").data('userId', userId);
+        }
+
+        function deleteUser() {
+            var userId = $("#DeleteModel").data('userId');
+
+            $.ajax({
+                url: '@Url.Action("Delete", "Home")',
+                type: 'POST',
+                data: {
+                    delId: userId
+                },
+                success: function(response) {
+                    var messageContainer = $("#deleteMessageContainer");
+                    messageContainer.removeClass("alert alert-success alert-danger");
+
+                    if (response.success) {
+                        messageContainer.addClass("alert alert-success").text(response.message);
+                        $('#DeleteModel').modal('hide');
+                        location.reload();
+                    } else {
+                        messageContainer.addClass("alert alert-danger").text(response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    var messageContainer = $("#deleteMessageContainer");
+                    messageContainer.removeClass("alert alert-success alert-danger");
+                    messageContainer.addClass("alert alert-danger").text('Error: ' + error);
+                }
+            });
+        }
+
+        // Refresh the page when the modal is closed
+        function handleCloseModal() {
+            location.reload();
+        }
+    </script>
+
+    <!-- Registered UserList -->
+    <h1 class="mt-xxl-5 mx-5">Registered User List</h1>
+
+    <div class="d-grid m-5">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">user_Id</th>
+                    <th scope="col">user_name</th>
+                    <th scope="col">user_email</th>
+                    <th scope="col">user_about</th>
+                    <th scope="col">user_password</th>
+                    <th scope="col">user_image</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td>@user.registered_user_id</td>
+                        <td>@user.registered_user_name</td>
+                        <td>@user.registered_user_mail</td>
+                        <td>@user.registered_user_about</td>
+                        <td>@user.registered_user_password</td>
+                        <td>
+                            <img id="userImage_@user.registered_user_id"
+                                 src="@user.registered_user_imagepath"
+                                 alt="User Image"
+                                 width="50"
+                                 height="50"
+                                 style="border-radius: 50%; object-fit: cover;" />
+                        </td>
+                        <td>
+                            <button data-bs-toggle="modal" data-bs-target="#EditModel" class="btn btn-warning" onclick="populateEditModel('@user.registered_user_id', '@user.registered_user_name', '@user.registered_user_mail', '@user.registered_user_password', '@user.registered_user_about','@user.registered_user_imagepath')">Edit</button>
+                            <button data-bs-toggle="modal" data-bs-target="#DeleteModel" class="btn btn-danger" onclick="handleDelete('@user.registered_user_id')">Delete</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <br />
+        <br />
+
+        <!-- Edit Modal -->
+        <div class="modal fade" id="EditModel" tabindex="-1" aria-labelledby="EditModelLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="EditModalLabel">Edit User</h5>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="EditUserId" />
+                        <label for="EditUserName">User Name</label>
+                        <input id="EditUserName" name="EditUserName" autocomplete="off" class="form-control" />
+                        <label for="EditUserMail">User Mail</label>
+                        <input id="EditUserMail" name="EditUserMail" autocomplete="off" class="form-control" />
+                        <label for="EditUserAbout">User About</label>
+                        <input id="EditUserAbout" name="EditUserAbout" autocomplete="off" class="form-control" />
+                        <label for="EditUserPassword">User Password</label>
+                        <input id="EditUserPassword" name="EditUserPassword" autocomplete="off" class="form-control" />
+                        <label for="EditUserImage">User Image</label>
+                        <input type="file" id="EditUserImage" name="EditUserImage" class="form-control" accept=".jpeg,.png,.jpg" />
+                        <input type="hidden" id="OldImagePath" name="OldImagePath" >
+
+
+                        <div class="mt-3" id="messageContainer"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="handleCloseModal()">Close</button>
+                        <button class="btn btn-primary" onclick="saveChanges()">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Delete Modal -->
+        <div class="modal fade" id="DeleteModel" tabindex="-1" aria-labelledby="DeleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="DeleteModalLabel">Are You Sure You Want To Delete?</h5>
+                    </div>
+                    <div class="modal-body">
+                        <div id="deleteMessageContainer" class="mt-3"></div> <!-- Message container -->
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" data-bs-dismiss="modal" onclick="handleCloseModal()">Close</button>
+                        <button class="btn btn-danger" onclick="deleteUser()">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Back to form -->
+        <div class="form-text" id="help_backTo" style="margin-left:135px;">
+            <a href="@Url.Action("Register", "Home")" class="btn btn-info">Back_To_Form</a>
+        </div>
+    </div>
+</body>
+</html>

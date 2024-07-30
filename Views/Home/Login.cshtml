@@ -20,41 +20,6 @@
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-success">
-
-    </nav>
-
-    @*--form *@
-    <div class="d-flex  justify-content-center">
-        <div class="card m-5  border border-success" style="width:500px;">
-            <form class="container-fluid" id="loginpage" method="post" action="@Url.Action("Login","Home")">
-                <div class="card-header text-center bg-success" style="font-weight:900;">
-                    LOGIN
-
-                </div>
-                <div class="card-body">
-
-                    <div class="mb-3">
-                        <label for="login_user_email" class="form-label">Usermail</label>
-                        <input type="email" class="form-control" id="login_user_email" name="login_user_email" placeholder="Enter Your usermail..." autocomplete="off">
-                    </div>
-                    <div class="mb-3">
-                        <label for="login_user_password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="login_user_password" name="login_user_password" placeholder="Enter Your Password..."autocomplete="off">
-                    </div>
-
-                </div>
-                <div class="card-footer ">
-                    <button type="submit" id="login_user" class="btn btn-success">Login</button>
-
-
-                    <div class="form-text" id="help_register" style="margin-left:135px;">If Not Registered , register here -> <a href="@Url.Action("Register","Home")">signup</a></div>
-
-                </div>
-            </form>
-        </div>
-    </div>
-
 
     @*jquery cdn*@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -107,12 +72,49 @@
     </script>
 
 
-  @*  @if (TempData["LoginErrorMsg"] != null)
-    {
-        <div class="alert alert-danger mt-2">
-            @TempData["LoginErrorMsg"]
+    @*  @if (TempData["LoginErrorMsg"] != null)
+        {
+            <div class="alert alert-danger mt-2">
+                @TempData["LoginErrorMsg"]
+            </div>
+        }*@
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-success">
+
+    </nav>
+
+    @*--form *@
+    <div class="d-flex  justify-content-center">
+        <div class="card m-5  border border-success" style="width:500px;">
+            <form class="container-fluid" id="loginpage" method="post" action="@Url.Action("Login","Home")">
+                <div class="card-header text-center bg-success" style="font-weight:900;">
+                    LOGIN
+
+                </div>
+                <div class="card-body">
+
+                    <div class="mb-3">
+                        <label for="login_user_email" class="form-label">Usermail</label>
+                        <input type="email" class="form-control" id="login_user_email" name="login_user_email" placeholder="Enter Your usermail..." autocomplete="off">
+                    </div>
+                    <div class="mb-3">
+                        <label for="login_user_password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="login_user_password" name="login_user_password" placeholder="Enter Your Password..." autocomplete="off">
+                    </div>
+
+                </div>
+                <div class="card-footer ">
+                    <button type="submit" id="login_user" class="btn btn-success">Login</button>
+
+
+                    <div class="form-text" id="help_register" style="margin-left:135px;">If Not Registered , register here -> <a href="@Url.Action("Register","Home")">signup</a></div>
+
+                </div>
+            </form>
         </div>
-    }*@
+    </div>
+
+
 
 </body>
 </html>

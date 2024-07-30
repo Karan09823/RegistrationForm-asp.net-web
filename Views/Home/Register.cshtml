@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     Layout = null;
 }
 
@@ -9,41 +8,42 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Register</title>
-    @*--bootstrap css *@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <style>
         .error {
             color: red;
         }
     </style>
-
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-success"></nav>
 
-    <!-- form -->
     <div class="d-flex justify-content-center">
         <div class="card m-5 border border-success" style="width:500px;">
-            <form class="container-fluid" id="registerForm" method="post" action="@Url.Action("RegisterUser", "Home")" autocomplete="off">
+            <form class="container-fluid" id="registerForm" method="post" action="@Url.Action("RegisterUser", "Home")" autocomplete="off" enctype="multipart/form-data">
                 <div class="card-header text-center bg-success" style="font-weight:900;">
                     SIGNUP
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
                         <label for="user_name" class="form-label">Name</label>
-                        <input type="text" class="form-control" id="user_name" name="user_name" autocomplete="off">
+                        <input type="text" class="form-control" id="user_name" name="user_name" required autocomplete="off">
                     </div>
                     <div class="mb-3">
                         <label for="user_email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="user_email" name="user_email" autocomplete="off">
+                        <input type="email" class="form-control" id="user_email" name="user_email" required autocomplete="off">
                     </div>
                     <div class="mb-3">
                         <label for="user_password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="user_password" name="user_password" autocomplete="off">
+                        <input type="password" class="form-control" id="user_password" name="user_password" required autocomplete="off">
                     </div>
                     <div class="mb-3">
                         <label for="user_about" class="form-label">About</label>
-                        <input type="text" class="form-control" id="user_about" name="user_about" autocomplete="off">
+                        <input type="text" class="form-control" id="user_about" name="user_about" required autocomplete="off">
+                    </div>
+                    <div class="mb-3">
+                        <label for="user_image" class="form-label">Upload Your Image</label>
+                        <input type="file" class="form-control" id="user_image" name="user_image" accept=".jpeg ,.png,.jpg" required />
                     </div>
                 </div>
                 <div class="card-footer">
@@ -57,7 +57,10 @@
         </div>
     </div>
 
-    <!-- Modal -->
+    <div class="form-text" id="help_userList" style="margin-left:135px;">
+        <a href="@Url.Action("UserList", "Home")" class="btn btn-info">USER LIST</a>
+    </div>
+
     <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -65,7 +68,6 @@
                     <h5 class="modal-title mx-3" id="registerModalLabel">Registration Status</h5>
                     <button type="button" class="btn-close bg-secondary" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <!-- modal message -->
                 <div class="modal-body"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -74,11 +76,8 @@
         </div>
     </div>
 
-    <!-- jquery cdn -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <!-- jquery validate cdn -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.21.0/jquery.validate.min.js"></script>
-    <!-- Bootstrap js file -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
@@ -101,6 +100,9 @@
                     user_about: {
                         required: true,
                         minlength: 3
+                    },
+                    user_image: {
+                        required: true
                     }
                 },
                 messages: {
@@ -119,32 +121,23 @@
                     user_about: {
                         required: "Please enter your role",
                         minlength: "Properly describe your role"
+                    },
+                    user_image: {
+                        required: "Please upload your image"
                     }
-                },
-                submitHandler: function (form) {
-                    $.ajax({
-                        url: $(form).attr("action"),
-                        type: $(form).attr("method"),
-                        data: $(form).serialize(),
-                        success: function (response) {
-                            var message = response.message;
-                            $("#registerModal .modal-body").text(message);
-                            $("#registerModal").modal("show");
-                        }
-                    });
                 }
             });
 
-/*form submission using button id */
-
-/*
             $("#user_register").click(function (e) {
                 e.preventDefault();
                 if ($("#registerForm").valid()) {
+                    var formData = new FormData($("#registerForm")[0]);
                     $.ajax({
                         url: $("#registerForm").attr("action"),
                         type: $("#registerForm").attr("method"),
-                        data: $("#registerForm").serialize(),
+                        data: formData,
+                        processData: false,
+                        contentType: false,
                         success: function (response) {
                             var message = response.message;
                             $("#registerModal .modal-body").text(message);
@@ -157,25 +150,16 @@
                         }
                     });
                 }
-            });*/
+            });
 
-
-
-
-            /*page refresh after modal close*/
             $("#registerModal").on('hidden.bs.modal', function () {
                 location.reload();
             });
 
-
+            $("#user_reset").click(function () {
+                location.reload();
+            });
         });
     </script>
-    
-    @* @if (TempData["RegisterUserMsg"] != null)
-        {
-            <div class="alert alert-info mt-2">
-                @TempData["RegisterUserMsg"]
-            </div>
-        }*@
 </body>
 </html>
