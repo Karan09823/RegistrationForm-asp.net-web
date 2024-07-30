@@ -14,8 +14,10 @@ namespace REGISTRATION.Models
 
         public string registered_user_mail { get; set; }
 
-        public String registered_user_password { get; set; }
-
+        public string registered_user_password { get; set; }
+       
         public string registered_user_about { get; set;}
+
+        public string registered_user_imagepath { get; set; }
     }
 }
